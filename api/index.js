@@ -1,9 +1,18 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
+import authRoutes from "./routes/auth.route.js";
+import mongoose from "mongoose";
 
 dotenv.config();
-
+mongoose
+  .connect(process.env.MONGO_DB)
+  .then(() => {
+    console.log("database is connected");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 const app = express();
 app.use(express.json());
 app.get("/", (req, res, next) => {
@@ -16,6 +25,8 @@ app.listen(process.env.PORT, (req, res) => {
 });
 
 app.use("/api/user", userRoutes);
+app.use("/api/auth", authRoutes);
+
 // incase the server doesnot connect with the server do this middleware
 
 app.use((err, req, res, next) => {
